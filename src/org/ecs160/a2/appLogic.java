@@ -8,7 +8,7 @@ public class appLogic {
     private workSpace workSpaceRef;
     private toolBar toolBarRef;
     private boolean userDrag;
-    public appLogic(Form other, workSpace workSpaceRef, Container toolBarRef) {
+    public appLogic(menu main_menu, workSpace workSpaceRef, Container toolBarRef) {
         //reset
         //event listeners for buttons and whatnot
         this.addDragListener();

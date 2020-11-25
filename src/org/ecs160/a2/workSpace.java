@@ -22,20 +22,21 @@ public class workSpace extends Container {
                     " ", " ", " ", " ", " ", " ", " ", " ",
                     " ", " ", " ", " ", " ", " ", " ", " ",
                     " ", " ", " ", " ", " ", " ", " ", " ",
-                    " ", " ", " ", " ", " ", " ", " ", " ",
-                    " ", " ", " ", " ", " ", " ", " ", " ",
-                    " ", " ", " ", " ", " ", " ", " ", " ",
+//                    " ", " ", " ", " ", " ", " ", " ", " ",
+//                    " ", " ", " ", " ", " ", " ", " ", " ",
+//                    " ", " ", " ", " ", " ", " ", " ", " ",
                     //" ", " ", " ", " ", " ", " ", " ", " ",
                     //" ", " ", " ", " ", " ", " ", " ", " ",
                     //" ", " ", " ", " ", " ", " ", " ", " ",
                     //" ", " ", " ", " ", " ", " ", " ", " ",
-                    " ", " ", " ", " ", " ", " ", " ", " ",};
+                    //" ", " ", " ", " ", " ", " ", " ", " ",
+            };
 
             private Hashtable<String, CustomizedButton> buttons = new Hashtable<String, CustomizedButton>();
 
             public workSpace() {
                 super();
-                this.setLayout(new GridLayout(8, 16));
+                this.setLayout(new GridLayout(12, 8));
                 this.getAllStyles().setBgColor(0x6890b3);
                 this.getAllStyles().setBgTransparency(255);
                 for (String buttonName : buttonNames) {

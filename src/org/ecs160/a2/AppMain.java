@@ -111,11 +111,14 @@ public class AppMain {
 
        // toolBar tooBar = new toolBar();
         workSpace workSpc = new workSpace();
-        workSpc.setScrollableX(true);
+        workSpc.setScrollableX(false);
+
+        menu main_menu = new menu();
+
 
         // form for the workspace, gates, and title
-        appLogic logic = new appLogic(hi, workSpc, toolBar);
-        formApp app = new formApp(hi, workSpc, toolBar);
+        appLogic logic = new appLogic(main_menu, workSpc, toolBar);
+        formApp app = new formApp(main_menu, workSpc, toolBar);
         workSpc.setDropTarget(true);
 
         app.show();
