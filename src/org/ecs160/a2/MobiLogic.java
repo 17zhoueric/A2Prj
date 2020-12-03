@@ -1,11 +1,135 @@
 package org.ecs160.a2;
 
+import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.events.ActionListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MobiLogic {
+    private toolBar tBar;
+    private workSpace wSpace;
+    private menu mainMenu;
+    private formApp app;
+
+    private String userSelectedNavbarGate = "None";
+    private String userSelectedNavbarPeripheral = "None";
+    private String userSelectedBoardComponent = "None";
+
+    public MobiLogic() {
+        tBar = new toolBar();
+        tBar.setScrollableX(true);
+        wSpace = new workSpace();
+        wSpace.setScrollableX(false);
+        mainMenu = new menu();
+        app = new formApp(mainMenu, wSpace, tBar);
+    }
+
+    public void initUIComponents() {
+        app.show();
+    }
+
+    public void initAppLogic() {
+        attachActionListenersToGrid();
+        userSelectsGateFromNavBarEvent();
+        userSelectsPeripheralsFromNavBarEvents();
+        clearBoardFunctionality();
+        trashCanFunctionality();
+    }
+    private void attachActionListenersToGrid () {
+        for (String key: wSpace.getWorkSpace().keySet()) {
+            wSpace.getGridCell(key).addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    if (!userSelectedNavbarGate.equals("None")) {
+                        wSpace.getGridCell(key).addComponent(userSelectedNavbarGate);
+                        userSelectedNavbarGate = "None";
+                        mainMenu.updateGateSelected("Gate Appears Here");
+                    }
+                    else if (!userSelectedNavbarPeripheral.equals("None")) {
+                        wSpace.getGridCell(key).addComponent(userSelectedNavbarPeripheral);
+                        userSelectedNavbarPeripheral = "None";
+                    }
+                    else if (wSpace.getGridCell(key).isFilled()) {
+                        userSelectedBoardComponent = wSpace.getGridCell(key).getCell();
+                    }
+                }
+            });
+        }
+    }
+
+    private void userSelectsGateFromNavBarEvent() {
+        userSelectsGateFromNavBarEvent(tBar.getButton("AND Gate"));
+        userSelectsGateFromNavBarEvent(tBar.getButton("NAND Gate"));
+        userSelectsGateFromNavBarEvent(tBar.getButton("NOR Gate"));
+        userSelectsGateFromNavBarEvent(tBar.getButton("NOT Gate"));
+        userSelectsGateFromNavBarEvent(tBar.getButton("OR Gate"));
+        userSelectsGateFromNavBarEvent(tBar.getButton("XNOR Gate"));
+        userSelectsGateFromNavBarEvent(tBar.getButton("XOR Gate"));
+    }
+
+    private void userSelectsGateFromNavBarEvent(CustomizedNav button) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                userSelectedNavbarGate = button.getName();
+                mainMenu.updateGateSelected(userSelectedNavbarGate);
+            }
+        });
+    }
+
+    private void userSelectsPeripheralsFromNavBarEvents() {
+        userSelectsPeripheralsFromNavBarEvents(tBar.getButton("Toggle"));
+        userSelectsPeripheralsFromNavBarEvents(tBar.getButton("LED"));
+    }
+
+    private void userSelectsPeripheralsFromNavBarEvents(CustomizedNav button) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                userSelectedNavbarPeripheral = button.getName();
+            }
+        });
+    }
+
+    private void clearBoardFunctionality() {
+        mainMenu.getButton("CLEAR").addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                for (String key: wSpace.getWorkSpace().keySet()) {
+                    wSpace.getGridCell(key).removeComponent();
+                }
+                app.show(); // this line refreshes the screen
+            }
+        });
+    }
+    
+    private void trashCanFunctionality() {
+        mainMenu.getButton("TRASH").addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (!userSelectedBoardComponent.equals("None")) {
+                    wSpace.getGridCell(userSelectedBoardComponent).removeComponent();
+                    userSelectedBoardComponent = "None";
+                    app.show();
+                }
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     Map<Component, List<Component>> connections = new HashMap<>();
     /*** For each key (gate), the value (list) represents all the inputs into the key. For example:
      * A -----C
