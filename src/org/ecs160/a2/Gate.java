@@ -17,6 +17,8 @@ public class Gate implements Component {
     public List<Boolean> inputs; // Use list instead of ArrayList to allow flexibility. See: https://stackoverflow.com/questions/2279030/type-list-vs-type-arraylist-in-java
     public Boolean output;
 
+    public Gate() {}
+
     public Gate (List<Boolean> inputs, Boolean output) {
         this.inputs = inputs;
         this.output = output;

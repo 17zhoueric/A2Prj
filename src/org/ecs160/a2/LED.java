@@ -10,9 +10,4 @@ public class LED extends CheckBox implements Component {
     public Boolean output() {
         return isSelected();
     }
-
-    public void toggle() {
-        setSelected(!isSelected());
-    }
-
 }

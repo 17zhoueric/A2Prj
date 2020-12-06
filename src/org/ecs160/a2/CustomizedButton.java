@@ -15,6 +15,7 @@ public class CustomizedButton extends Button {
     private String cellName;
     private Boolean filled = false;
     private Resources r;
+    private Component comp;
 
     public CustomizedButton(String txt) {
         super(txt);
@@ -35,66 +36,74 @@ public class CustomizedButton extends Button {
     public Boolean isFilled() { return filled; }
 
     public void addComponent(String s) {
-        if (!filled) this.getAllStyles().setBgImage(chooseComponent(s));
+        Image image;
+
+        switch(s) {
+            case "AND Gate":
+                image = r.getImage("and.png");
+                comp = new ANDGate();
+                break;
+            case "NAND Gate":
+                image = r.getImage("nand.png");
+                comp = new NANDGate();
+                break;
+            case "NOR Gate":
+                image = r.getImage("nor.png");
+                comp = new NORGate();
+                break;
+            case "NOT Gate":
+                image = r.getImage("not.png");
+                comp = new NOTGate();
+                break;
+            case "OR Gate":
+                image = r.getImage("or.png");
+                comp = new ORGate();
+                break;
+            case "XNOR Gate":
+                image = r.getImage("xnor.png");
+                comp = new XNORGate();
+                break;
+            case "XOR Gate":
+                image = r.getImage("xor.png");
+                comp = new XORGate();
+                break;
+            case "Toggle":
+                image = r.getImage("toggle_off.PNG");
+                comp = new Toggle();
+                break;
+            case "LED":
+                image = r.getImage("red_led.jpg");
+                comp = new LED();
+                break;
+            case "Vertical":
+                image = r.getImage("vertical.png");
+                break;
+            case "Horizontal":
+                image = r.getImage("horizontal.png");
+                break;
+            case "nine o'clock":
+                image = r.getImage("nine_o_clock.png");
+                break;
+            case "nine thirty":
+                image = r.getImage("nine_thirty.png");
+                break;
+            case "six fifteen":
+                image = r.getImage("six_fifteen.png");
+                break;
+            case "three o'clock":
+                image = r.getImage("three_o_clock.png");
+                break;
+            default:
+                image = r.getImage("white_square.PNG");
+        }
+
+        if (!filled) this.getAllStyles().setBgImage(image);
         filled = true;
     }
 
     public void removeComponent() {
         if (filled) { this.getAllStyles().setBgImage(null); }
         filled = false;
-    }
-
-    private Image chooseComponent (String s) {
-        Image component;
-        switch(s) {
-            case "AND Gate":
-                component = r.getImage("and.png");
-                break;
-            case "NAND Gate":
-                component = r.getImage("nand.png");
-                break;
-            case "NOR Gate":
-                component = r.getImage("nor.png");
-                break;
-            case "NOT Gate":
-                component = r.getImage("not.png");
-                break;
-            case "OR Gate":
-                component = r.getImage("or.png");
-                break;
-            case "XNOR Gate":
-                component = r.getImage("xnor.png");
-                break;
-            case "XOR Gate":
-                component = r.getImage("xor.png");
-                break;
-            case "Toggle":
-                component = r.getImage("toggle_off.PNG");
-                break;
-            case "LED":
-                component = r.getImage("red_led.jpg");
-                break;
-            case "Vertical":
-                component = r.getImage("vertical.png");
-                break;
-            case "Horizontal":
-                component = r.getImage("horizontal.png");
-                break;
-            case "nine o'clock":
-                component = r.getImage("nine_o_clock.png");
-                break;
-            case "nine thirty":
-                component = r.getImage("nine_thirty.png");
-                break;
-            case "six fifteen":
-                component = r.getImage("six_fifteen.png");
-                break;
-            case "three o'clock":
-                component = r.getImage("three_o_clock.png");
-                break;
-            default:
-                component = r.getImage("white_square.PNG");
-        }
-        return component;
+        this.comp = null;
     }
 }
