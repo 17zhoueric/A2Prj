@@ -1,39 +1,31 @@
 package org.ecs160.a2;
 
-import com.codename1.io.Util;
 import com.codename1.ui.Image;
 import com.codename1.ui.util.Resources;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class Peripheral implements StateChanger {
 
     private Resources r;
+    private formApp app;
     private Integer gridCell;
-  //  private Boolean output = false;
+    private Boolean output = false;
     private String name;
     private Image image;
-    private Integer output = 0; //red by default; green = 1; blue = 0
 
-    public Peripheral(Integer gridCell, String name) {
+    public Peripheral(formApp app, Integer gridCell, String name) {
         try { r = Resources.open("/theme.res"); }
         catch (IOException e) { e.printStackTrace(); }
+        this.app = app;
         this.gridCell = gridCell;
         this.name = name;
+        calculateOutput();
+        setImage(output);
     }
 
-    public Peripheral () {
-        try { r = Resources.open("/theme.res"); }
-        catch (IOException e) { e.printStackTrace(); }
-    }
-
-//    @Override
-//    public Boolean getOutput() {
-//        return output;
-//    }
-    public Integer getOutput() {
+    @Override
+    public Boolean getOutput() {
         return output;
     }
 
@@ -44,23 +36,21 @@ public class Peripheral implements StateChanger {
 
     @Override
     public Image getImage() {
+        setImage(output);
         return image;
     }
 
     // this function is primarily used for the toggle since we need to change its state externally
-//    @Override
-//    public void updateState(Boolean state) {
-//        output = state;
-//    }
+    // TODO: consider separating toggle from LED/wires
     @Override
-    public void updateState(Integer state) {
+    public void updateState(Boolean state) {
         output = state;
+        setImage(state);
     }
 
     // calculates output depending on grid cell positions
     @Override
-    public void calculateOutput(formApp app) {
-        // switch statement to calculate output
+    public void calculateOutput() {
         switch(name) {
             case "Toggle":
                 break;
@@ -70,51 +60,21 @@ public class Peripheral implements StateChanger {
                 if (app.getWorkSpace().getGridCell(gridCell - 1).isFilled())
                     output = app.getWorkSpace().getGridCell(gridCell - 1).getOutput();
                 else
-                    //output = false;
-                    output = -1;
+                    output = false;
                 break;
-            default: // vertical
-                if (app.getWorkSpace().getGridCell(gridCell - 8).isFilled()
-                        && !(app.getWorkSpace().getGridCell(gridCell - 8).getStateChanger().getName().equals("Horizontal")))
+            default:
+                if (app.getWorkSpace().getGridCell(gridCell - 8).isFilled())
                     output = app.getWorkSpace().getGridCell(gridCell - 8).getOutput();
                 else
-                    //output = false;
-                    output = -1;
+                    output = false;
         }
-        setImage(app);
     }
 
-    @Override
-    public int getVersion() {
-        return 0;
-    }
-
-    @Override
-    public void externalize(DataOutputStream out) throws IOException {
-        Util.writeObject(gridCell, out);
-        Util.writeObject(output, out);
-        Util.writeObject(name, out);
-        Util.writeObject(image, out);
-    }
-
-    @Override
-    public void internalize(int version, DataInputStream in) throws IOException {
-        gridCell = (Integer) Util.readObject(in);
-        //output = (Boolean) Util.readObject(in);
-        output = (Integer) Util.readObject(in);
-        name = (String) Util.readObject(in);
-        image = (Image) Util.readObject(in);
-    }
-
-    @Override
-    public String getObjectId() {
-        return "Peripheral";
-    }
-
-    private void setImage(formApp app) {
+    // sets image based on state
+    private void setImage(Boolean state) {
         switch(name) {
             case "Toggle":
-                if (output == 1) {
+                if (state) {
                     image = r.getImage("toggle_on.png");
                     app.getWorkSpace().getGridCell(gridCell).getAllStyles().setFgColor(0x01FF15);
                 }
@@ -124,7 +84,7 @@ public class Peripheral implements StateChanger {
                 }
                 break;
             case "LED":
-                if (output == 1) {
+                if (state) {
                     image = r.getImage("green_led.png");
                     app.getWorkSpace().getGridCell(gridCell).getAllStyles().setFgColor(0x01FF15);
                 }
@@ -134,41 +94,13 @@ public class Peripheral implements StateChanger {
                 }
                 break;
             case "Vertical":
-
-                if (output == 1) {
-                    image = r.getImage("green_vertical.png");
-                }
-                else if (output == 0){
-                    image = r.getImage("blue_vertical.png");
-                }
-                else {
-                    image = r.getImage("red_vertical.png");
-                }
+                image = r.getImage("vertical.png");
                 break;
             case "Horizontal":
-
-                if (output == 1) {
-                    image = r.getImage("green_horizontal.png");
-                }
-                else if (output == 0){
-                    image = r.getImage("blue_horizontal.png");
-                }
-                else {
-                    image = r.getImage("red_horizontal.png");
-                }
+                image = r.getImage("horizontal.png");
                 break;
             default:
-
-                if (output == 1) {
-                    image = r.getImage("green_nine_thirty.png");
-                }
-                else if (output == 0){
-                    image = r.getImage("blue_nine_thirty.png");
-                }
-                else {
-                    image = r.getImage("red_nine_thirty.png");
-                }
-                break;
+                image = r.getImage("nine_thirty.png");
         }
     }
 }

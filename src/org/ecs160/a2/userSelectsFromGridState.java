@@ -1,13 +1,8 @@
 package org.ecs160.a2;
 
-import com.codename1.io.Storage;
-import com.codename1.io.Util;
 import com.codename1.ui.Button;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class userSelectsFromGridState implements MobiLogicState{
     /**
@@ -53,21 +48,16 @@ public class userSelectsFromGridState implements MobiLogicState{
     private void controlToggle() {
         if (app.getWorkSpace().getGridCell(userSelectedGridCell).isFilled() &&
                 app.getWorkSpace().getGridCell(userSelectedGridCell).getStateChanger().getName().equals("Toggle")) {
-            //Boolean previousState = app.getWorkSpace().getGridCell(userSelectedGridCell).getOutput();
-            Integer previousState = app.getWorkSpace().getGridCell(userSelectedGridCell).getOutput();
-            System.out.println("This is previous state: " + previousState);
-
-            app.getWorkSpace().getGridCell(userSelectedGridCell).getStateChanger().updateState((previousState ^ 1));
-            app.getWorkSpace().getGridCell(userSelectedGridCell).getStateChanger().calculateOutput(app);
+            Boolean previousState = app.getWorkSpace().getGridCell(userSelectedGridCell).getOutput();
+            app.getWorkSpace().getGridCell(userSelectedGridCell).getStateChanger().updateState(!previousState);
         }
     }
 
     private void refreshScreen() {
         for (int key = 0; key < 96; key++) {
             app.getWorkSpace().getGridCell(key).unhighlightGridCell();
-            app.getWorkSpace().getGridCell(key).updateState(app);
+            app.getWorkSpace().getGridCell(key).updateState();
         }
-        Storage.getInstance().writeObject("workspace", app.getWorkSpace().getWorkSpaceMap());
         app.show();
     }
 
@@ -87,38 +77,6 @@ public class userSelectsFromGridState implements MobiLogicState{
             }
         });
     }
-
-    //FIXME:
-    // need to refactor gates to superclass in order to cast getStateChanger
-    // need to assign prop delay to selected gate
-//    private void propDelayFunctionality(MobiLogicContext context) {
-//        ArrayList<String> Gates = new ArrayList<String>(
-//                Arrays.asList("AND Gate", "NAND Gate", "NOR Gate", "XNOR Gate",
-//                        "OR Gate", "NOT Gate", "XOR Gate"));
-//
-//        if (app.getMainMenu().propagation_delay.getDoneListener() != null) {
-//            removeActionListener(app.getMainMenu().propagation_delay);
-//        }
-//        // determine if grid cell selected is gate
-//        // extract data with getText()
-//        // clear text with clear() once user clicks somewhere else
-//        app.getMainMenu().propagation_delay.setDoneListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent evt) {
-//                removeActionListeners();
-//
-//                //checking if the grid cell selected is a gate
-//                if (Gates.contains(app.getWorkSpace().getGridCell(userSelectedGridCell).getStateChanger().getName())) {
-//                    String propDelay = app.getMainMenu().propagation_delay.getText();
-//
-//                }
-//                app.getWorkSpace().getGridCell(userSelectedGridCell).removeComponent();
-//                app.show();
-//                context.setState(new InitState(app));
-//                context.getState().computeAction(context);
-//            }
-//        });
-//    }
 
     private void highlightUserSelectedGridCell() {
         app.getWorkSpace().getGridCell(userSelectedGridCell).highlightGridCell();

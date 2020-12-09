@@ -1,7 +1,5 @@
 package org.ecs160.a2;
 
-import com.codename1.io.Storage;
-import com.codename1.io.Util;
 import com.codename1.ui.Button;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
@@ -30,7 +28,6 @@ public class InitState implements MobiLogicState{
                     for (Integer key : app.getWorkSpace().getWorkSpaceMap().keySet()) {
                         app.getWorkSpace().getGridCell(key).removeComponent();
                     }
-                    Storage.getInstance().writeObject("workspace", app.getWorkSpace().getWorkSpaceMap());
                     app.show(); // this line refreshes the screen
                 }
             });
@@ -114,9 +111,8 @@ public class InitState implements MobiLogicState{
     private void refreshScreen() {
         for (int key = 0; key < 96; key++) {
             app.getWorkSpace().getGridCell(key).unhighlightGridCell();
-            app.getWorkSpace().getGridCell(key).updateState(app);
+            app.getWorkSpace().getGridCell(key).updateState();
         }
-        Storage.getInstance().writeObject("workspace", app.getWorkSpace().getWorkSpaceMap());
         app.show();
     }
 

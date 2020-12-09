@@ -1,21 +1,17 @@
 package org.ecs160.a2;
 
-import com.codename1.io.Externalizable;
-import com.codename1.io.Util;
 import com.codename1.ui.Image;
 import com.codename1.ui.util.Resources;
 import com.codename1.ui.Button;
 
-import java.io.*;
+import java.io.IOException;
 
-public class CustomizedButton extends Button implements Externalizable {
+public class CustomizedButton extends Button {
     private StateChanger stateChanger;
     private Integer cellName;
     private Boolean filled = false;
-//    private Boolean output = false;
-    private Integer output = 0;
+    private Boolean output = false;
     private Resources r;
-    //private Integer delay;
 
     public CustomizedButton(Integer txt) {
         super(Integer.toString(txt));
@@ -30,26 +26,15 @@ public class CustomizedButton extends Button implements Externalizable {
         cellName = txt;
     }
 
-    public CustomizedButton() {
-        try { r = Resources.open("/theme.res"); }
-        catch (IOException e) { e.printStackTrace(); }
-        this.getAllStyles().setFgColor(0xffffff);
-        this.getAllStyles().setBgColor(0xffffff);
-        this.getAllStyles().setBgTransparency(255);
-        this.getAllStyles().setMargin(3, 3, 3,3);
-    }
-
     // updates state of the grid cell based on the stateChanger attached
     // used to refresh states when circuit is changed
-    public void updateState(formApp app) {
+    public void updateState() {
         if (stateChanger != null) {
-            stateChanger.calculateOutput(app);
+            stateChanger.calculateOutput();
             output = stateChanger.getOutput();
-           // delay = stateChanger.getDelay();
             this.getAllStyles().setBgImage(stateChanger.getImage());
         } else {
-            //output = false;
-            output = -1;
+            output = false;
         }
     }
 
@@ -63,10 +48,7 @@ public class CustomizedButton extends Button implements Externalizable {
         this.getAllStyles().setMargin(3, 3, 3,3);
     }
 
-    //public Boolean getOutput() { return output; }
-    public Integer getOutput() { return output; }
-
-   // public Integer getDelay() { return delay; }
+    public Boolean getOutput() { return output; }
 
     public StateChanger getStateChanger() { return stateChanger; }
 
@@ -93,44 +75,37 @@ public class CustomizedButton extends Button implements Externalizable {
         Image component;
         switch(s) {
             case "AND Gate":
-                stateChanger = new ANDGate(cellName, s);
-                stateChanger.calculateOutput(app);
+                stateChanger = new ANDGate(app, cellName, s);
                 component = stateChanger.getImage();
                 output = stateChanger.getOutput();
                 break;
             case "NAND Gate":
-                stateChanger = new NANDGate(cellName, s);
-                stateChanger.calculateOutput(app);
+                stateChanger = new NANDGate(app, cellName, s);
                 component = stateChanger.getImage();
                 output = stateChanger.getOutput();
                 break;
             case "NOR Gate":
-                stateChanger = new NORGate(cellName, s);
-                stateChanger.calculateOutput(app);
+                stateChanger = new NORGate(app, cellName, s);
                 component = stateChanger.getImage();
                 output = stateChanger.getOutput();
                 break;
             case "NOT Gate":
-                stateChanger = new NOTGate(cellName, s);
-                stateChanger.calculateOutput(app);
+                stateChanger = new NOTGate(app, cellName, s);
                 component = stateChanger.getImage();
                 output = stateChanger.getOutput();
                 break;
             case "OR Gate":
-                stateChanger = new ORGate(cellName, s);
-                stateChanger.calculateOutput(app);
+                stateChanger = new ORGate(app, cellName, s);
                 component = stateChanger.getImage();
                 output = stateChanger.getOutput();
                 break;
             case "XNOR Gate":
-                stateChanger = new XNORGate(cellName, s);
-                stateChanger.calculateOutput(app);
+                stateChanger = new XNORGate(app, cellName, s);
                 component = stateChanger.getImage();
                 output = stateChanger.getOutput();
                 break;
             case "XOR Gate":
-                stateChanger = new XORGate(cellName, s);
-                stateChanger.calculateOutput(app);
+                stateChanger = new XORGate(app, cellName, s);
                 component = stateChanger.getImage();
                 output = stateChanger.getOutput();
                 break;
@@ -139,8 +114,7 @@ public class CustomizedButton extends Button implements Externalizable {
             case "Vertical":
             case "Horizontal":
             case "9:30":
-                stateChanger = new Peripheral(cellName, s);
-                stateChanger.calculateOutput(app);
+                stateChanger = new Peripheral(app, cellName, s);
                 component = stateChanger.getImage();
                 output = stateChanger.getOutput();
                 break;
@@ -148,32 +122,5 @@ public class CustomizedButton extends Button implements Externalizable {
                 component = r.getImage("white_square.PNG");
         }
         return component;
-    }
-
-    @Override
-    public int getVersion() {
-        return 1;
-    }
-
-    @Override
-    public void externalize(DataOutputStream out) throws IOException {
-        Util.writeObject(stateChanger, out);
-        Util.writeObject(cellName, out);
-        Util.writeObject(filled, out);
-        Util.writeObject(output, out);
-    }
-
-    @Override
-    public void internalize(int version, DataInputStream in) throws IOException {
-        stateChanger = (StateChanger) Util.readObject(in);
-        cellName = (Integer) Util.readObject(in);
-        filled = (Boolean) Util.readObject(in);
-        //output = (Boolean) Util.readObject(in);
-        output = (Integer) Util.readObject(in);
-    }
-
-    @Override
-    public String getObjectId() {
-        return "Grid cell";
     }
 }
